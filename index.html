@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Sanctuary OS v6</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,ewogICAgIm5hbWUiOiAiU2FuY3R1YXJ5IE9TIiwKICAgICJzaG9ydF9uYW1lIjogIlNhbmN0dWFyeSIsCiAgICAic3RhcnRfdXJsIjogIi4iLAogICAgImRpc3BsYXkiOiAiZnVsbHNjcmVlbiIsCiAgICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGYxNzJhIiwKICAgICJ0aGVtZV9jb2xvciI6ICIjMGYxNzJhIiwKICAgICJpY29ucyI6IFtdCn0=">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* --- CORE STYLES --- */
+        :root {
+            --bg-primary: #0f172a;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            --accent-color: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --font-main: 'Inter', sans-serif;
+            --font-display: 'Inter', sans-serif;
+            --sidebar-bg: rgba(255, 255, 255, 0.03);
+        }
+
+        /* THEMES */
+        [data-theme="olympus"] {
+            --bg-primary: #f8fafc;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(203, 213, 225, 0.8);
+            --glass-hover: rgba(255, 255, 255, 0.85);
+            --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+            --accent-color: #b45309;
+            --accent-glow: rgba(245, 158, 11, 0.3);
+            --font-main: 'Inter', sans-serif;
+            --font-display: 'Cinzel', serif;
+            --sidebar-bg: rgba(255, 255, 255, 0.8);
+        }
+
+        [data-theme="thunder"] {
+            --bg-primary: #1e1e24;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --glass-bg: rgba(0, 0, 0, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-hover: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            --accent-color: #fbbf24;
+            --accent-glow: rgba(251, 191, 36, 0.5);
+            --sidebar-bg: rgba(0, 0, 0, 0.6);
+        }
+
+        [data-theme="rain"] {
+            --bg-primary: #0f172a;
+            --text-primary: #e2e8f0;
+            --text-secondary: #64748b;
+            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-border: rgba(56, 189, 248, 0.2);
+            --glass-hover: rgba(56, 189, 248, 0.1);
+            --accent-color: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.4);
+            --sidebar-bg: rgba(15, 23, 42, 0.8);
+        }
+
+        [data-theme="astro"] {
+            --bg-primary: #000000;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(129, 140, 248, 0.2);
+            --glass-hover: rgba(129, 140, 248, 0.1);
+            --accent-color: #818cf8;
+            --accent-glow: rgba(129, 140, 248, 0.5);
+            --sidebar-bg: rgba(0, 0, 0, 0.5);
+        }
+
+        [data-theme="fire"] {
+            --bg-primary: #1a0500;
+            --text-primary: #fff1f2;
+            --text-secondary: #fda4af;
+            --glass-bg: rgba(50, 0, 0, 0.3);
+            --glass-border: rgba(244, 63, 94, 0.3);
+            --glass-hover: rgba(244, 63, 94, 0.15);
+            --accent-color: #f43f5e;
+            --accent-glow: rgba(244, 63, 94, 0.6);
+            --sidebar-bg: rgba(20, 0, 0, 0.8);
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-primary);
+            overflow: hidden;
+            background-color: var(--bg-primary);
+            transition: background-color 0.5s ease;
+            overscroll-behavior: none; /* Prevents rubber-banding on mobile */
+        }
+
+        .gpu-accelerated {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+            will-change: transform, opacity;
+        }
+
+        /* SFONDI */
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2;
+            transition: opacity 0.8s ease; will-change: opacity; opacity: 0; pointer-events: none;
+        }
+
+        .aurora-bg {
+            background: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%), #000;
+            background-size: 200% 200%;
+        }
+
+        .olympus-bg { background: radial-gradient(circle at 50% 50%, #f1f5f9, #cbd5e1); }
+        .thunder-bg { background: linear-gradient(to bottom, #2c3e50, #000000); }
+        .rain-bg { background: linear-gradient(to bottom, #1e293b, #0f172a); }
+        .astro-bg { background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%); }
+        .fire-bg { background: radial-gradient(circle at 50% 100%, #450a0a, #000000); }
+
+        [data-theme="aurora"] .aurora-bg { opacity: 1; }
+        [data-theme="olympus"] .olympus-bg { opacity: 1; }
+        [data-theme="thunder"] .thunder-bg { opacity: 1; }
+        [data-theme="rain"] .rain-bg { opacity: 1; }
+        [data-theme="astro"] .astro-bg { opacity: 1; }
+        [data-theme="fire"] .fire-bg { opacity: 1; }
+
+        /* LOADING SCREEN */
+        #loading-screen {
+            position: fixed; inset: 0; background: #000; z-index: 99999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s ease;
+        }
+        #loading-screen.loaded { opacity: 0; pointer-events: none; }
+        .loader {
+            width: 48px; height: 48px;
+            border: 3px solid #FFF; border-bottom-color: transparent;
+            border-radius: 50%; display: inline-block; box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* ANIMATIONS LAYERS */
+        .rain-container, .stars-container, .fire-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; display: none;
+        }
+        [data-theme="rain"] .rain-container,
+        [data-theme="astro"] .stars-container,
+        [data-theme="fire"] .fire-container { display: block; }
+        
+        /* Rain */
+        .rain-drop {
+            position: absolute; background: rgba(255, 255, 255, 0.2); width: 1px; height: 80px; top: -100px;
+            animation: rainfall linear infinite;
+        }
+        @keyframes rainfall { 0% { transform: translateY(-100px); opacity: 0; } 50% { opacity: 0.5; } 100% { transform: translateY(100vh); opacity: 0; } }
+
+        /* Astro */
+        .star {
+            position: absolute; background: white; border-radius: 50%;
+            animation: twinkle ease-in-out infinite alternate;
+        }
+        /* Warp Speed Animation */
+        .star.warp { animation: warpSpeed 1s linear forwards !important; height: 100px; width: 2px; opacity: 1; }
+        
+        @keyframes warpSpeed { 
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 
+            100% { transform: translate(-50%, -50%) scale(5) translateY(100vh); opacity: 0; } 
+        }
+
+        .comet {
+            position: absolute; width: 4px; height: 4px; background: #fff; border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1), 0 0 0 8px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 1);
+            animation: comet 6s linear infinite; opacity: 0;
+        }
+        @keyframes twinkle { 0% { opacity: 0.3; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
+        @keyframes comet { 0% { transform: translateX(0) translateY(0); opacity: 1; } 70% { opacity: 1; } 100% { transform: translateX(300px) translateY(400px); opacity: 0; } }
+
+        /* Fire Particles */
+        .ember {
+            position: absolute; width: 4px; height: 4px; background: #fbbf24; border-radius: 50%;
+            box-shadow: 0 0 10px #f59e0b; opacity: 0;
+            animation: rise 3s linear infinite;
+        }
+        @keyframes rise {
+            0% { opacity: 0; transform: translateY(100vh) scale(0.5); }
+            20% { opacity: 1; }
+            80% { opacity: 0.5; }
+            100% { opacity: 0; transform: translateY(-10vh) scale(1.2); }
+        }
+
+        /* Focus Ripple */
+        .ripple-overlay {
+            position: fixed; inset: 0; z-index: 9998; pointer-events: none; opacity: 0;
+            background: radial-gradient(circle, transparent 0%, rgba(99, 102, 241, 0.3) 50%, transparent 100%);
+            transform: scale(0.5);
+        }
+        .ripple-overlay.active { animation: rippleEffect 0.8s ease-out; }
+        
+        @keyframes rippleEffect {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        /* UI ELEMENTS */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            transition: opacity 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .glass-card {
+            background: linear-gradient(145deg, var(--glass-bg) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .glass-card:hover {
+            background: var(--glass-hover);
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+        }
+        
+        .glass-sidebar {
+            background: var(--sidebar-bg); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 50; 
+        }
+
+        /* UTILS */
+        .hidden-view { display: none !important; }
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
+        /* Improved scrollbar hiding for broader support */
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+        /* IFRAME & CALENDAR MODALS */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            display: flex; align-items: center; justify-content: center; padding: 1rem;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-content {
+            background: var(--bg-primary); border: 1px solid var(--glass-border);
+            border-radius: 1.5rem; transform: scale(0.95); transition: transform 0.3s ease;
+            max-width: 100%; max-height: 100%; overflow: hidden; display: flex; flex-direction: column;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+
+        /* Browser Modal specific */
+        #browser-modal .modal-content { width: 95vw; height: 90vh; }
+        
+        /* ZEN & LIGHTNING */
+        .zen-trigger-zone { position: fixed; top: 0; left: 0; bottom: 0; width: 30px; z-index: 40; display: none; }
+        body.zen-active .zen-trigger-zone { display: block; }
+        
+        .lightning-bolt {
+            position: fixed; top: 0; left: 50%; width: 100vw; height: 100vh; background: #fff;
+            transform: translateX(-50%); z-index: 9999; pointer-events: none; clip-path: polygon(55% 0, 45% 40%, 60% 40%, 40% 100%); display: none;
+        }
+        .lightning-bolt.active { display: block; animation: strike 0.2s ease-out; }
+        .flash-overlay { position: fixed; inset: 0; bg-white; z-index: 9998; opacity: 0; pointer-events: none; }
+        .flash-overlay.active { animation: flash 0.1s ease-out; background: white; }
+        @keyframes strike { 0% { clip-path: polygon(50% 0, 50% 0, 50% 0, 50% 0); opacity: 1; } 20% { clip-path: polygon(55% 0, 45% 40%, 60% 40%, 40% 100%); opacity: 1; } 100% { clip-path: polygon(55% 0, 45% 40%, 60% 40%, 40% 100%); opacity: 0; } }
+        @keyframes flash { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col md:flex-row p-2 md:p-4 gap-4 relative z-10 selection:bg-indigo-500 selection:text-white gpu-accelerated" data-theme="aurora">
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <span class="loader mb-4"></span>
+        <h1 class="text-xl font-bold tracking-[0.3em] uppercase text-white animate-pulse">Sanctuary OS</h1>
+    </div>
+
+    <div class="zen-trigger-zone" id="zen-trigger"></div>
+    <div class="lightning-bolt" id="lightning"></div>
+    <div class="flash-overlay" id="flash"></div>
+    <div class="ripple-overlay" id="ripple"></div>
+    
+    <div class="rain-container" id="rain-layer"></div>
+    <div class="stars-container" id="stars-layer"></div>
+    <div class="fire-container" id="fire-layer"></div>
+
+    <!-- Backgrounds -->
+    <div class="bg-layer aurora-bg gpu-accelerated"></div>
+    <div class="bg-layer olympus-bg gpu-accelerated"></div>
+    <div class="bg-layer thunder-bg gpu-accelerated"></div>
+    <div class="bg-layer rain-bg gpu-accelerated"></div>
+    <div class="bg-layer astro-bg gpu-accelerated"></div>
+    <div class="bg-layer fire-bg gpu-accelerated"></div>
+
+    <!-- Responsive Navigation (Sidebar on Desktop, Bottom Bar on Mobile) -->
+    <div id="main-sidebar" class="fixed bottom-4 left-4 right-4 h-16 md:static md:h-full md:w-20 z-50 flex flex-row md:flex-col items-center justify-between md:py-6 px-4 md:px-0 rounded-2xl glass-sidebar gpu-accelerated shadow-2xl md:shadow-none">
+        <div class="hidden md:block mb-2 text-accent"><i data-lucide="zap" width="28" height="28"></i></div>
+        
+        <!-- Nav Items -->
+        <div class="flex flex-row md:flex-col gap-1 md:gap-4 w-full justify-between md:justify-start md:items-center">
+            <button onclick="switchView('dashboard')" id="btn-dashboard" class="p-3 rounded-xl transition-all hover:bg-white/10 active-nav opacity-60 hover:opacity-100" title="Dashboard"><i data-lucide="layout-grid" width="22"></i></button>
+            <button onclick="switchView('vault')" id="btn-vault" class="p-3 rounded-xl transition-all hover:bg-white/10 opacity-60 hover:opacity-100" title="Vault"><i data-lucide="library" width="22"></i></button>
+            <button onclick="switchView('news')" id="btn-news" class="p-3 rounded-xl transition-all hover:bg-white/10 opacity-60 hover:opacity-100" title="News"><i data-lucide="newspaper" width="22"></i></button>
+            <button onclick="switchView('gov')" id="btn-gov" class="p-3 rounded-xl transition-all hover:bg-white/10 opacity-60 hover:opacity-100" title="Istituzioni"><i data-lucide="landmark" width="22"></i></button>
+            <button onclick="switchView('zen')" id="btn-zen" class="p-3 rounded-xl transition-all hover:bg-white/10 opacity-60 hover:opacity-100" title="Zen"><i data-lucide="flower-2" width="22"></i></button>
+            
+            <!-- Mobile Settings Trigger -->
+            <button onclick="toggleSettings()" class="md:hidden p-3 opacity-60 hover:opacity-100 transition-opacity"><i data-lucide="settings" width="22"></i></button>
+        </div>
+        
+        <!-- Desktop Settings Trigger -->
+        <div class="hidden md:block mt-auto"><button onclick="toggleSettings()" class="p-3 opacity-60 hover:opacity-100 transition-opacity"><i data-lucide="settings" width="22"></i></button></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden rounded-[2rem] glass-panel p-1 border-0 md:border relative z-20 gpu-accelerated pb-20 md:pb-1">
+        
+        <header class="px-4 md:px-6 py-4 flex justify-between items-end shrink-0 select-none">
+            <div>
+                <p id="date-display" onclick="toggleCalendar()" class="text-secondary text-xs font-bold uppercase tracking-widest mb-1 opacity-70 cursor-pointer hover:text-white hover:opacity-100 transition-all">...</p>
+                <h1 class="text-xl md:text-2xl font-bold tracking-tight cursor-pointer hover:scale-[1.01] transition-transform origin-left" onclick="triggerFire()" title="Attenzione: scotta">Benvenuto <span class="text-accent">al lavoro.</span></h1>
+            </div>
+            <div class="text-right cursor-pointer hover:text-accent transition-colors" onclick="triggerAstro()" title="Attiva modalità Astro">
+                <p id="clock-display" class="text-3xl font-light tracking-tighter tabular-nums">00:00</p>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-hidden px-4 md:px-6 pb-4 relative">
+            
+            <!-- DASHBOARD -->
+            <div id="view-dashboard" class="grid grid-cols-1 md:grid-cols-12 gap-4 h-full grid-rows-[auto_1fr_1fr] fade-in overflow-y-auto md:overflow-hidden pr-1 pb-24 md:pb-0">
+                <!-- Search Bar -->
+                <div class="md:col-span-12">
+                    <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3 group focus-within:border-accent">
+                        <i data-lucide="search" class="text-gray-400 group-focus-within:text-accent" width="18"></i>
+                        <input type="text" id="internal-search-input" placeholder="Cerca nel web..." class="bg-transparent border-none outline-none w-full text-base placeholder-gray-500 font-light h-full" autocomplete="off">
+                        <button onclick="openInternalBrowser()" class="text-xs bg-white/5 hover:bg-white/10 px-2 py-1 rounded text-gray-400">VAI</button>
+                    </div>
+                </div>
+
+                <!-- LEFT COL: Pomodoro (4) -->
+                <div class="md:col-span-4 md:row-span-2 flex flex-col h-full min-h-[250px] md:min-h-0">
+                    <div class="glass-card p-4 rounded-2xl flex flex-col items-center justify-between h-full relative overflow-hidden text-center">
+                        <div class="flex gap-2 p-1 bg-black/5 rounded-full border border-white/5" id="pomo-controls">
+                            <button onclick="setTimer('focus')" class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider" data-mode="focus">Focus</button>
+                            <button onclick="setTimer('short')" class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider" data-mode="short">Pausa</button>
+                        </div>
+                        <div class="flex-1 flex items-center justify-center my-2">
+                            <div id="timer-display" class="text-6xl md:text-7xl font-light tracking-tighter font-mono tabular-nums select-none">25:00</div>
+                        </div>
+                        <div class="flex gap-3 w-full justify-center">
+                            <button id="btn-timer-toggle" onclick="toggleTimer()" class="px-6 py-3 rounded-xl font-bold text-sm tracking-wide transition-all bg-accent-soft text-accent border border-accent-glow hover:scale-105 flex-1">AVVIA</button>
+                            <button onclick="resetTimer()" class="p-3 rounded-xl bg-white/5 text-gray-400 hover:bg-white/10 transition-all"><i data-lucide="rotate-ccw" width="18"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MID COL: Notes (4) -->
+                <div class="md:col-span-4 md:row-span-2 min-h-[250px] md:min-h-0">
+                    <div class="glass-card p-5 rounded-2xl h-full flex flex-col">
+                        <div class="flex items-center gap-2 mb-2 opacity-70">
+                            <i data-lucide="pen-tool" width="16"></i>
+                            <span class="text-[10px] font-bold tracking-widest uppercase">Note</span>
+                        </div>
+                        <textarea id="brain-dump" class="flex-1 bg-transparent border-none outline-none resize-none placeholder-gray-500 text-sm leading-relaxed p-1 rounded focus:bg-white/5 transition-colors h-full" placeholder="Scrivi qui..."></textarea>
+                        <div class="flex justify-between items-center mt-2 opacity-40 text-[10px]">
+                            <button onclick="clearNotes()" class="hover:text-red-400">Pulisci</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COL: Weather & Stats (4) -->
+                <div class="md:col-span-4 md:row-span-2 flex flex-col gap-4 min-h-[250px] md:min-h-0">
+                    <!-- WEATHER CARD (RAIN TRIGGER) -->
+                    <div class="glass-card p-5 rounded-2xl flex-1 flex flex-col justify-center cursor-pointer hover:bg-white/5 transition-all relative overflow-hidden group" onclick="triggerRain()" id="weather-card">
+                        <div class="absolute top-2 right-2 opacity-50 z-20"><i data-lucide="refresh-cw" width="12" onclick="event.stopPropagation(); fetchWeather()"></i></div>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex flex-col z-10 w-2/3">
+                                <span class="text-[10px] font-bold uppercase tracking-widest opacity-60 flex items-center gap-1 group/input">
+                                    <i data-lucide="map-pin" width="10"></i> 
+                                    <input type="text" id="city-input" value="Roma" class="bg-transparent w-full outline-none border-b border-transparent hover:border-white/30 focus:border-white/50 text-accent transition-colors truncate" onclick="event.stopPropagation()" title="Premi invio per cercare">
+                                </span>
+                                <span class="text-3xl font-light" id="weather-temp">--°</span>
+                            </div>
+                            <i id="weather-icon" data-lucide="cloud-sun" width="48" height="48" class="text-yellow-400 group-hover:scale-110 transition-transform z-10"></i>
+                        </div>
+                        <div class="text-xs opacity-60 z-10 truncate" id="weather-desc">Caricamento meteo...</div>
+                        <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+
+                    <!-- STATS / DAILY STATUS (THUNDER TRIGGER) -->
+                    <div class="glass-card p-5 rounded-2xl flex-1 flex flex-col justify-center gap-1 cursor-pointer hover:border-yellow-400/50 transition-colors" onclick="triggerThunder()">
+                        <div class="flex items-center gap-2 opacity-70">
+                            <i data-lucide="activity" width="16"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest">Stato</span>
+                        </div>
+                        <div class="text-lg font-light leading-tight">Mood <br/> 
+                            <span class="text-accent font-bold text-xl cursor-pointer hover:scale-110 inline-block transition-transform break-words" id="daily-status-text" onclick="event.stopPropagation(); triggerFocusAnim()">Focus</span>
+                        </div>
+                        <div class="text-[9px] opacity-40 mt-1">Clicca la scritta per un boost</div>
+                    </div>
+                </div>
+
+                <!-- BOTTOM ROW: Vault & Quick -->
+                <div class="md:col-span-4 glass-card p-5 rounded-2xl flex flex-col justify-center items-center gap-2 cursor-pointer hover:bg-white/5 transition-colors group min-h-[100px]" onclick="switchView('vault')">
+                    <div class="p-3 bg-accent-soft rounded-full text-accent group-hover:scale-110 transition-transform"><i data-lucide="hash" width="24"></i></div>
+                    <div class="text-center"><div class="text-xs font-bold">Apri Vault</div><div class="text-[10px] opacity-60" id="tool-count-display">...</div></div>
+                </div>
+                <div class="md:col-span-8 glass-card rounded-2xl p-4 flex flex-col justify-center overflow-hidden min-h-[100px]">
+                    <h3 class="text-[10px] font-bold opacity-50 uppercase tracking-widest mb-3 ml-1">Rapidi</h3>
+                    <div class="flex gap-3 overflow-x-auto pb-1 scrollbar-hide px-1" id="quick-links-container"></div>
+                </div>
+            </div>
+
+            <!-- VAULT -->
+            <div id="view-vault" class="h-full flex flex-col hidden-view fade-in">
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-4 shrink-0">
+                    <h2 class="text-xl font-light tracking-tight flex items-center gap-3">
+                        <span class="bg-accent-soft p-1.5 rounded-lg text-accent"><i data-lucide="library" width="20"></i></span>
+                        Vault <span class="opacity-50 text-sm font-normal" id="vault-count"></span>
+                    </h2>
+                    <div class="flex-1 flex justify-center px-4 overflow-hidden w-full">
+                        <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-hide w-full max-w-xl justify-start md:justify-center" id="tag-filters"></div>
+                    </div>
+                    <div class="relative w-full md:w-auto">
+                        <i data-lucide="search" class="absolute left-3 top-2.5 text-gray-500" width="16"></i>
+                        <input type="text" id="vault-search" placeholder="Filtra..." class="glass-input pl-9 pr-4 py-1.5 rounded-lg w-full md:w-56 text-sm">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 overflow-y-auto pr-2 pb-24 md:pb-20" id="vault-grid"></div>
+            </div>
+
+            <!-- NEWS -->
+            <div id="view-news" class="h-full flex flex-col hidden-view fade-in">
+                <div class="mb-4 shrink-0"><h2 class="text-xl font-light tracking-tight flex items-center gap-3">Feed & News</h2></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pr-2 pb-24 md:pb-20" id="news-grid"></div>
+            </div>
+
+            <!-- GOV -->
+            <div id="view-gov" class="h-full flex flex-col hidden-view fade-in">
+                <div class="mb-4 shrink-0"><h2 class="text-xl font-light tracking-tight flex items-center gap-3">Uffici & Istituzioni</h2></div>
+                <div class="flex flex-col gap-6 overflow-y-auto pr-2 pb-24 md:pb-20" id="gov-container"></div>
+            </div>
+
+            <!-- ZEN -->
+            <div id="view-zen" class="h-full flex flex-col items-center justify-center hidden-view fade-in relative">
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5 mix-blend-overlay"><i data-lucide="flower-2" width="400" height="400"></i></div>
+                <div class="z-50 text-center space-y-12 flex flex-col items-center">
+                    <div class="relative flex items-center justify-center">
+                        <div class="breathing-circle w-48 h-48 rounded-full blur-[50px] absolute"></div>
+                        <h2 id="zen-clock" class="text-7xl md:text-9xl font-extralight tracking-tighter tabular-nums relative z-10 select-none">00:00</h2>
+                    </div>
+                    <div class="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+                        <i data-lucide="wind" class="text-accent opacity-80" width="18"></i>
+                        <span class="text-lg md:text-xl font-light tracking-wide" id="breath-text">Inspira...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INTERNAL BROWSER MODAL -->
+    <div id="browser-modal" class="modal-overlay">
+        <div class="modal-content glass-panel">
+            <div class="flex items-center justify-between p-3 bg-slate-900 border-b border-white/10 shrink-0">
+                <div class="flex items-center gap-2">
+                    <button onclick="closeInternalBrowser()" class="hover:bg-white/10 p-2 rounded text-red-400"><i data-lucide="x" width="18"></i></button>
+                    <span class="text-xs font-mono text-gray-400 truncate w-48" id="browser-url">Browser</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="document.getElementById('web-frame').src = document.getElementById('web-frame').src" class="hover:bg-white/10 p-2 rounded text-gray-400"><i data-lucide="refresh-cw" width="14"></i></button>
+                    <button onclick="window.open(document.getElementById('web-frame').src, '_blank')" class="hover:bg-white/10 p-2 rounded text-accent"><i data-lucide="external-link" width="14"></i></button>
+                </div>
+            </div>
+            <div class="px-3 py-1 bg-yellow-500/10 text-yellow-500 text-[10px] text-center font-bold">Nota: alcuni siti non permettono l'apertura qui per sicurezza.</div>
+            <iframe id="web-frame" class="flex-1 bg-white w-full" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <!-- CALENDAR MODAL -->
+    <div id="calendar-modal" class="modal-overlay">
+        <div class="glass-panel p-6 rounded-2xl w-full max-w-sm relative shadow-2xl bg-[#0f172a] transform scale-100">
+            <button onclick="toggleCalendar()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i data-lucide="x" width="20"></i></button>
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-accent"><i data-lucide="calendar" width="20"></i> Calendario</h2>
+            
+            <div class="grid grid-cols-7 gap-1 mb-4 text-center text-xs font-bold text-gray-500">
+                <div>L</div><div>M</div><div>M</div><div>G</div><div>V</div><div>S</div><div>D</div>
+            </div>
+            <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-sm mb-6">
+                <!-- JS Generated -->
+            </div>
+            
+            <h3 class="text-xs font-bold opacity-50 uppercase tracking-widest mb-2">Google Suite</h3>
+            <div class="grid grid-cols-4 gap-2">
+                <a href="https://calendar.google.com" target="_blank" class="p-2 bg-white/5 rounded-lg flex flex-col items-center gap-1 hover:bg-white/10 hover:text-blue-400 transition-colors">
+                    <i data-lucide="calendar-check" width="16"></i> <span class="text-[9px]">Cal</span>
+                </a>
+                <a href="https://mail.google.com" target="_blank" class="p-2 bg-white/5 rounded-lg flex flex-col items-center gap-1 hover:bg-white/10 hover:text-red-400 transition-colors">
+                    <i data-lucide="mail" width="16"></i> <span class="text-[9px]">Gmail</span>
+                </a>
+                <a href="https://drive.google.com" target="_blank" class="p-2 bg-white/5 rounded-lg flex flex-col items-center gap-1 hover:bg-white/10 hover:text-green-400 transition-colors">
+                    <i data-lucide="hard-drive" width="16"></i> <span class="text-[9px]">Drive</span>
+                </a>
+                <a href="https://meet.google.com" target="_blank" class="p-2 bg-white/5 rounded-lg flex flex-col items-center gap-1 hover:bg-white/10 hover:text-yellow-400 transition-colors">
+                    <i data-lucide="video" width="16"></i> <span class="text-[9px]">Meet</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="modal-overlay">
+        <div class="glass-panel p-6 rounded-2xl w-full max-w-sm relative shadow-2xl bg-[#0f172a]">
+            <button onclick="toggleSettings()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i data-lucide="x" width="20"></i></button>
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">Impostazioni</h2>
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-bold mb-3 opacity-50 uppercase tracking-widest">Tema</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="setTheme('aurora')" class="p-3 rounded-xl border border-white/10 bg-gray-900 hover:border-indigo-500 transition-all text-left"><div class="text-xs">Aurora</div></button>
+                        <button onclick="setTheme('olympus')" class="p-3 rounded-xl border border-white/10 bg-slate-100 hover:border-amber-600 transition-all text-left"><div class="text-xs text-black">Olympus</div></button>
+                        <button onclick="setTheme('rain')" class="p-3 rounded-xl border border-blue-900/50 bg-slate-900 hover:border-blue-400 transition-all text-left"><div class="text-xs text-blue-200">Rain</div></button>
+                        <button onclick="setTheme('astro')" class="p-3 rounded-xl border border-purple-900/50 bg-black hover:border-purple-400 transition-all text-left"><div class="text-xs text-purple-200">Astro</div></button>
+                        <button onclick="setTheme('fire')" class="p-3 rounded-xl border border-red-900/50 bg-red-950 hover:border-red-500 transition-all text-left"><div class="text-xs text-red-200">Fire</div></button>
+                    </div>
+                </div>
+                <button onclick="clearNotes()" class="w-full py-2 bg-white/5 rounded-xl text-xs hover:bg-white/10 transition-colors">Pulisci Note</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- RESTORED DATABASE (150+ ENTRIES) ---
+        const TOOL_DB = [
+             // AI
+            {name:"ChatGPT",cat:"AI",url:"https://chat.openai.com",desc:"Chatbot leader."},
+            {name:"Claude",cat:"AI",url:"https://claude.ai",desc:"Scrittura naturale."},
+            {name:"Gemini",cat:"AI",url:"https://gemini.google.com",desc:"Google AI."},
+            {name:"Perplexity",cat:"AI",url:"https://perplexity.ai",desc:"Motore ricerca AI."},
+            {name:"Copilot",cat:"AI",url:"https://copilot.microsoft.com",desc:"Microsoft AI."},
+            {name:"HuggingChat",cat:"AI",url:"https://huggingface.co/chat",desc:"Open Source."},
+            {name:"Mistral",cat:"AI",url:"https://chat.mistral.ai",desc:"AI Europea."},
+            {name:"Phind",cat:"AI",url:"https://phind.com",desc:"Search per Dev."},
+            {name:"You.com",cat:"AI",url:"https://you.com",desc:"Search engine."},
+            {name:"Poe",cat:"AI",url:"https://poe.com",desc:"Aggregatore bot."},
+            {name:"Character.ai",cat:"AI",url:"https://character.ai",desc:"Roleplay AI."},
+            {name:"Midjourney",cat:"AI",url:"https://midjourney.com",desc:"Arte top."},
+            {name:"Leonardo.ai",cat:"AI",url:"https://leonardo.ai",desc:"Asset grafici."},
+            {name:"AdobeFirefly",cat:"AI",url:"https://firefly.adobe.com",desc:"Gen Img."},
+            {name:"Ideogram",cat:"AI",url:"https://ideogram.ai",desc:"Testo su Img."},
+            {name:"Civitai",cat:"AI",url:"https://civitai.com",desc:"Modelli Stable."},
+            {name:"Suno",cat:"AI",url:"https://suno.com",desc:"Crea musica."},
+            {name:"Udio",cat:"AI",url:"https://udio.com",desc:"Musica Pro."},
+            {name:"ElevenLabs",cat:"AI",url:"https://elevenlabs.io",desc:"Voci realistiche."},
+            {name:"Murf",cat:"AI",url:"https://murf.ai",desc:"TTS Studio."},
+            {name:"Otter.ai",cat:"AI",url:"https://otter.ai",desc:"Trascrizione."},
+            {name:"Vomo",cat:"AI",url:"https://vomo.ai",desc:"Note vocali."},
+            {name:"Gamma",cat:"AI",url:"https://gamma.app",desc:"PPT automatici."},
+            {name:"Tome",cat:"AI",url:"https://tome.app",desc:"Storytelling."},
+            {name:"Beautiful.ai",cat:"AI",url:"https://beautiful.ai",desc:"Slide design."},
+            {name:"Runway",cat:"AI",url:"https://runwayml.com",desc:"Video edit."},
+            {name:"Pika",cat:"AI",url:"https://pika.art",desc:"Gen Video."},
+            {name:"Krea",cat:"AI",url:"https://krea.ai",desc:"Realtime Img."},
+            {name:"Magnific",cat:"AI",url:"https://magnific.ai",desc:"Upscale AI."},
+            {name:"Vectorizer",cat:"AI",url:"https://vectorizer.ai",desc:"Bitmap to SVG."},
+            
+            // Google Suite (Added per request)
+            {name:"Gmail",cat:"Prod",url:"https://mail.google.com",desc:"Email."},
+            {name:"G-Calendar",cat:"Prod",url:"https://calendar.google.com",desc:"Agenda."},
+            {name:"G-Drive",cat:"Prod",url:"https://drive.google.com",desc:"Cloud."},
+            {name:"G-Meet",cat:"Prod",url:"https://meet.google.com",desc:"Video call."},
+            {name:"G-Photos",cat:"Chill",url:"https://photos.google.com",desc:"Foto."},
+
+            // Dev
+            {name:"VS Code Web",cat:"Dev",url:"https://vscode.dev",desc:"Editor browser."},
+            {name:"GitHub",cat:"Dev",url:"https://github.com",desc:"Repo hosting."},
+            {name:"GitLab",cat:"Dev",url:"https://gitlab.com",desc:"DevOps."},
+            {name:"StackBlitz",cat:"Dev",url:"https://stackblitz.com",desc:"IDE Web."},
+            {name:"CodeSandbox",cat:"Dev",url:"https://codesandbox.io",desc:"Cloud Dev."},
+            {name:"Replit",cat:"Dev",url:"https://replit.com",desc:"Coding facile."},
+            {name:"Glitch",cat:"Dev",url:"https://glitch.com",desc:"App creative."},
+            {name:"JSFiddle",cat:"Dev",url:"https://jsfiddle.net",desc:"JS Playground."},
+            {name:"CodePen",cat:"Dev",url:"https://codepen.io",desc:"Frontend art."},
+            {name:"Vercel",cat:"Dev",url:"https://vercel.com",desc:"Deploy static."},
+            {name:"Netlify",cat:"Dev",url:"https://netlify.com",desc:"Hosting JAM."},
+            {name:"Render",cat:"Dev",url:"https://render.com",desc:"Cloud hosting."},
+            {name:"Supabase",cat:"Dev",url:"https://supabase.com",desc:"Backend open."},
+            {name:"Firebase",cat:"Dev",url:"https://firebase.google.com",desc:"App platform."},
+            {name:"Postman",cat:"Dev",url:"https://postman.com",desc:"API Test."},
+            {name:"Insomnia",cat:"Dev",url:"https://insomnia.rest",desc:"API Client."},
+            {name:"JSONCrack",cat:"Dev",url:"https://jsoncrack.com",desc:"Visual JSON."},
+            {name:"Regex101",cat:"Dev",url:"https://regex101.com",desc:"Regex test."},
+            {name:"DevDocs",cat:"Dev",url:"https://devdocs.io",desc:"Manuali off."},
+            {name:"MDN",cat:"Dev",url:"https://developer.mozilla.org",desc:"Web bible."},
+            {name:"W3Schools",cat:"Dev",url:"https://w3schools.com",desc:"Tutorial."},
+            {name:"CanIUse",cat:"Dev",url:"https://caniuse.com",desc:"Compatibilità."},
+            {name:"Carbon",cat:"Dev",url:"https://carbon.now.sh",desc:"Codice img."},
+            {name:"Ray.so",cat:"Dev",url:"https://ray.so",desc:"Snippet belli."},
+            {name:"Excalidraw",cat:"Dev",url:"https://excalidraw.com",desc:"Schizzi dev."},
+            {name:"Mermaid",cat:"Dev",url:"https://mermaid.live",desc:"Diagrammi code."},
+            {name:"Tailwind",cat:"Dev",url:"https://tailwindcss.com",desc:"CSS Framework."},
+            {name:"Bootstrap",cat:"Dev",url:"https://getbootstrap.com",desc:"UI Kit."},
+            {name:"React",cat:"Dev",url:"https://react.dev",desc:"JS Lib."},
+            {name:"Svelte",cat:"Dev",url:"https://svelte.dev",desc:"JS Framework."},
+
+            // Design
+            {name:"Figma",cat:"Design",url:"https://figma.com",desc:"UI Design."},
+            {name:"Penpot",cat:"Design",url:"https://penpot.app",desc:"Design Open."},
+            {name:"Canva",cat:"Design",url:"https://canva.com",desc:"Grafica fast."},
+            {name:"Photopea",cat:"Design",url:"https://photopea.com",desc:"PSD Web."},
+            {name:"Remove.bg",cat:"Design",url:"https://remove.bg",desc:"Via sfondo."},
+            {name:"Unsplash",cat:"Design",url:"https://unsplash.com",desc:"Foto stock."},
+            {name:"Pexels",cat:"Design",url:"https://pexels.com",desc:"Video stock."},
+            {name:"Freepik",cat:"Design",url:"https://freepik.com",desc:"Vettori."},
+            {name:"Flaticon",cat:"Design",url:"https://flaticon.com",desc:"Icone."},
+            {name:"Lucide",cat:"Design",url:"https://lucide.dev",desc:"Icon set."},
+            {name:"FontAwesome",cat:"Design",url:"https://fontawesome.com",desc:"Icone classiche."},
+            {name:"Google Fonts",cat:"Design",url:"https://fonts.google.com",desc:"Font web."},
+            {name:"DaFont",cat:"Design",url:"https://dafont.com",desc:"Font file."},
+            {name:"Coolors",cat:"Design",url:"https://coolors.co",desc:"Palette gen."},
+            {name:"Spline",cat:"Design",url:"https://spline.design",desc:"3D Web."},
+            {name:"Blender",cat:"Design",url:"https://blender.org",desc:"3D Suite."},
+            {name:"Dribbble",cat:"Design",url:"https://dribbble.com",desc:"Inspirazione."},
+            {name:"Behance",cat:"Design",url:"https://behance.net",desc:"Portfolio."},
+            {name:"Pinterest",cat:"Design",url:"https://pinterest.com",desc:"Moodboard."},
+            {name:"CapCut",cat:"Design",url:"https://www.capcut.com",desc:"Video edit."},
+
+            // Productivity
+            {name:"Notion",cat:"Prod",url:"https://notion.so",desc:"Workspace."},
+            {name:"Obsidian",cat:"Prod",url:"https://obsidian.md",desc:"Note."},
+            {name:"Trello",cat:"Prod",url:"https://trello.com",desc:"Kanban."},
+            {name:"Todoist",cat:"Prod",url:"https://todoist.com",desc:"Tasks."},
+            {name:"Slack",cat:"Prod",url:"https://slack.com",desc:"Chat lavoro."},
+            {name:"Discord",cat:"Prod",url:"https://discord.com",desc:"Community."},
+            {name:"Miro",cat:"Prod",url:"https://miro.com",desc:"Lavagna."},
+            {name:"WeTransfer",cat:"Prod",url:"https://wetransfer.com",desc:"File invio."},
+            {name:"Bitwarden",cat:"Prod",url:"https://bitwarden.com",desc:"Password."},
+            {name:"ProtonMail",cat:"Prod",url:"https://proton.me/mail",desc:"Email sicura."},
+            {name:"TempMail",cat:"Prod",url:"https://temp-mail.org",desc:"Mail trash."},
+            {name:"Zoom",cat:"Prod",url:"https://zoom.us",desc:"Video call."},
+            {name:"Loom",cat:"Prod",url:"https://loom.com",desc:"Video messaggi."},
+            {name:"ClickUp",cat:"Prod",url:"https://clickup.com",desc:"Project man."},
+            {name:"Asana",cat:"Prod",url:"https://asana.com",desc:"Task team."},
+            {name:"Monday",cat:"Prod",url:"https://monday.com",desc:"Work OS."},
+            {name:"TickTick",cat:"Prod",url:"https://ticktick.com",desc:"Pomo Tasks."},
+            {name:"10MinMail",cat:"Prod",url:"https://10minutemail.com",desc:"Mail 10m."},
+
+            // Study
+            {name:"Zotero",cat:"Study",url:"https://zotero.org",desc:"Biblio."},
+            {name:"Scholar",cat:"Study",url:"https://scholar.google.com",desc:"Ricerca."},
+            {name:"Sci-Hub",cat:"Study",url:"https://sci-hub.se",desc:"Unlock."},
+            {name:"Wolfram",cat:"Study",url:"https://wolframalpha.com",desc:"Math."},
+            {name:"Desmos",cat:"Study",url:"https://desmos.com",desc:"Grafici."},
+            {name:"GeoGebra",cat:"Study",url:"https://geogebra.org",desc:"Geometria."},
+            {name:"Symbolab",cat:"Study",url:"https://symbolab.com",desc:"Soluzioni."},
+            {name:"Overleaf",cat:"Study",url:"https://overleaf.com",desc:"LaTeX."},
+            {name:"Anki",cat:"Study",url:"https://apps.ankiweb.net",desc:"Flashcard."},
+            {name:"Quizlet",cat:"Study",url:"https://quizlet.com",desc:"Test."},
+            {name:"Khan",cat:"Study",url:"https://khanacademy.org",desc:"Lezioni."},
+            {name:"Coursera",cat:"Study",url:"https://coursera.org",desc:"Corsi."},
+            {name:"EdX",cat:"Study",url:"https://edx.org",desc:"Uni Courses."},
+            {name:"Duolingo",cat:"Study",url:"https://duolingo.com",desc:"Lingue."},
+            {name:"Babbel",cat:"Study",url:"https://babbel.com",desc:"Lingue pro."},
+            {name:"Mendeley",cat:"Study",url:"https://mendeley.com",desc:"Papers."},
+            {name:"Connected",cat:"Study",url:"https://connectedpapers.com",desc:"Mappe."},
+            {name:"ResearchR",cat:"Study",url:"https://researchrabbit.ai",desc:"Ricerca visiva."},
+            {name:"Litmaps",cat:"Study",url:"https://litmaps.com",desc:"Biblio map."},
+            {name:"Consensus",cat:"Study",url:"https://consensus.app",desc:"AI Science."},
+
+            // Utils
+            {name:"ILovePDF",cat:"Utils",url:"https://ilovepdf.com",desc:"PDF tools."},
+            {name:"TinyWow",cat:"Utils",url:"https://tinywow.com",desc:"Free utils."},
+            {name:"Speedtest",cat:"Utils",url:"https://speedtest.net",desc:"Velocità."},
+            {name:"Fast",cat:"Utils",url:"https://fast.com",desc:"Speed Netflix."},
+            {name:"Archive",cat:"Utils",url:"https://archive.org",desc:"Wayback."},
+            {name:"VirusTotal",cat:"Utils",url:"https://virustotal.com",desc:"Scan file."},
+            {name:"Privnote",cat:"Utils",url:"https://privnote.com",desc:"Note self-destruct."},
+            {name:"Pastebin",cat:"Utils",url:"https://pastebin.com",desc:"Testo link."},
+            {name:"QR Monkey",cat:"Utils",url:"https://www.qrcode-monkey.com",desc:"QR Gen."},
+            {name:"Bitly",cat:"Utils",url:"https://bitly.com",desc:"Short URL."},
+            {name:"Whois",cat:"Utils",url:"https://who.is",desc:"Domini."},
+            {name:"Convertio",cat:"Utils",url:"https://convertio.co",desc:"File convert."},
+            {name:"CloudConvert",cat:"Utils",url:"https://cloudconvert.com",desc:"Conversioni."},
+            {name:"123Apps",cat:"Utils",url:"https://123apps.com",desc:"Media tools."},
+            {name:"AudioCutter",cat:"Utils",url:"https://mp3cut.net",desc:"Taglia MP3."},
+            {name:"VideoCutter",cat:"Utils",url:"https://online-video-cutter.com",desc:"Taglia video."},
+            {name:"Compressor",cat:"Utils",url:"https://compressor.io",desc:"Img compress."},
+            {name:"Squoosh",cat:"Utils",url:"https://squoosh.app",desc:"Img optimizer."},
+            {name:"HaveIBeenPwned",cat:"Utils",url:"https://haveibeenpwned.com",desc:"Check mail."},
+            {name:"BrowserLeaks",cat:"Utils",url:"https://browserleaks.com",desc:"Privacy test."},
+
+            // Chill
+            {name:"Spotify",cat:"Chill",url:"https://open.spotify.com",desc:"Music."},
+            {name:"Lofi Girl",cat:"Chill",url:"https://lofigirl.com",desc:"Radio."},
+            {name:"Noisli",cat:"Chill",url:"https://noisli.com",desc:"Rumori."},
+            {name:"MyNoise",cat:"Chill",url:"https://mynoise.net",desc:"Audio eng."},
+            {name:"A Soft Murmur",cat:"Chill",url:"https://asoftmurmur.com",desc:"Mixer."},
+            {name:"Brain.fm",cat:"Chill",url:"https://brain.fm",desc:"Focus."},
+            {name:"Endel",cat:"Chill",url:"https://endel.io",desc:"Soundscape."},
+            {name:"Drive&Listen",cat:"Chill",url:"https://driveandlisten.herokuapp.com",desc:"Guida."},
+            {name:"Radio Garden",cat:"Chill",url:"https://radio.garden",desc:"Mondo."},
+            {name:"Twitch",cat:"Chill",url:"https://twitch.tv",desc:"Live."},
+            {name:"YouTube",cat:"Chill",url:"https://youtube.com",desc:"Video."},
+            {name:"Rainymood",cat:"Chill",url:"https://rainymood.com",desc:"Pioggia."},
+            {name:"WindowSwap",cat:"Chill",url:"https://window-swap.com",desc:"Viste."},
+            {name:"CityGuesser",cat:"Chill",url:"https://virtualvacation.us/guess",desc:"Viaggio."},
+            {name:"GeoGuessr",cat:"Chill",url:"https://geoguessr.com",desc:"Mappe."}
+        ];
+        
+        const NEWS_SOURCES = [
+            { name: "Skuola.net", url: "https://www.skuola.net", icon: "graduation-cap", color: "text-orange-400" },
+            { name: "Studenti.it", url: "https://www.studenti.it", icon: "book-open", color: "text-blue-400" },
+            { name: "Orizzonte Scuola", url: "https://www.orizzontescuola.it", icon: "school", color: "text-red-400" },
+            { name: "Sole 24 Ore Scuola", url: "https://www.ilsole24ore.com/sez/scuola", icon: "newspaper", color: "text-yellow-400" },
+            { name: "Universita.it", url: "https://www.universita.it", icon: "library", color: "text-indigo-400" },
+            { name: "Corriere Scuola", url: "https://www.corriere.it/scuola/", icon: "file-text", color: "text-red-500" },
+            { name: "Repubblica Scuola", url: "https://www.repubblica.it/scuola/", icon: "newspaper", color: "text-slate-400" },
+            { name: "Tuttoscuola", url: "https://www.tuttoscuola.com", icon: "book", color: "text-green-400" },
+            { name: "Tecnica Scuola", url: "https://www.tecnicadellascuola.it", icon: "settings", color: "text-blue-500" },
+            { name: "Miur Istruzione", url: "https://www.miur.gov.it", icon: "landmark", color: "text-blue-700" },
+            { name: "Alpha Test", url: "https://www.alphatest.it/news/", icon: "check-circle", color: "text-orange-500" },
+            { name: "Uninews24", url: "https://www.uninews24.it", icon: "globe", color: "text-cyan-400" },
+            { name: "Wired", url: "https://www.wired.it", icon: "cpu", color: "text-black" },
+            { name: "The Vision", url: "https://thevision.com", icon: "eye", color: "text-purple-400" },
+            { name: "Vice", url: "https://www.vice.com/it", icon: "zap", color: "text-black" },
+            { name: "Il Post", url: "https://www.ilpost.it", icon: "file", color: "text-orange-300" },
+            { name: "Open", url: "https://www.open.online", icon: "mouse-pointer", color: "text-blue-300" },
+            { name: "Fanpage", url: "https://www.fanpage.it", icon: "video", color: "text-yellow-300" },
+            { name: "Ansa", url: "https://www.ansa.it", icon: "rss", color: "text-green-300" },
+            { name: "Adnkronos", url: "https://www.adnkronos.com", icon: "rss", color: "text-green-300" },
+            { name: "Internazionale", url: "https://www.internazionale.it", icon: "globe", color: "text-yellow-200" },
+            { name: "L'Essenziale", url: "https://www.internazionale.it/essenziale", icon: "message-circle", color: "text-pink-300" },
+            { name: "Torcha", url: "https://www.torcha.it", icon: "flame", color: "text-red-500" },
+            { name: "Facta", url: "https://facta.news", icon: "check", color: "text-blue-200" },
+            { name: "Pagella Politica", url: "https://pagellapolitica.it", icon: "bar-chart", color: "text-indigo-300" },
+            { name: "Will Media", url: "https://willmedia.it", icon: "mic", color: "text-green-400" },
+            { name: "Valigia Blu", url: "https://www.valigiablu.it", icon: "briefcase", color: "text-blue-600" },
+            { name: "Linkiesta", url: "https://www.linkiesta.it", icon: "link", color: "text-slate-300" },
+            { name: "Domani", url: "https://www.editorialedomani.it", icon: "sun", color: "text-orange-200" },
+            { name: "Il Foglio", url: "https://www.ilfoglio.it", icon: "paperclip", color: "text-red-200" }
+        ];
+
+        const GOV_CATEGORIES = [
+            {
+                title: "Ministeri Centrali",
+                links: [
+                    { name: "MIM", url: "https://www.mim.gov.it", desc: "Ministero Istruzione." },
+                    { name: "MUR", url: "https://www.mur.gov.it", desc: "Ministero Università." },
+                    { name: "Governo", url: "https://www.governo.it", desc: "Presidenza Consiglio." },
+                    { name: "Esteri", url: "https://www.esteri.it", desc: "Farnesina." },
+                    { name: "Salute", url: "https://www.salute.gov.it", desc: "Ministero Salute." },
+                    { name: "Lavoro", url: "https://www.lavoro.gov.it", desc: "Min. Lavoro." },
+                    { name: "Cultura", url: "https://cultura.gov.it", desc: "Mic." }
+                ]
+            },
+            {
+                title: "Studenti & Scuola",
+                links: [
+                    { name: "Istanze Online", url: "https://www.istruzione.it/polis/Istanzeonline.htm", desc: "Servizi Digitali." },
+                    { name: "PagoInRete", url: "https://www.istruzione.it/pagoinrete/", desc: "Pagamenti Scuola." },
+                    { name: "IoStudio", url: "https://iostudio.pubblica.istruzione.it", desc: "Carta Studente." },
+                    { name: "INVALSI", url: "https://www.invalsi.it", desc: "Test Nazionali." },
+                    { name: "INDIRE", url: "https://www.indire.it", desc: "Ricerca Educativa." },
+                    { name: "Eduscopio", url: "https://eduscopio.it", desc: "Scelta Scuola." },
+                    { name: "Orientamento", url: "https://www.istruzione.it/orientamento/", desc: "Portale Orientamento." }
+                ]
+            },
+            {
+                title: "Università & Estero",
+                links: [
+                    { name: "Universitaly", url: "https://www.universitaly.it", desc: "Portale Università." },
+                    { name: "CINECA", url: "https://www.cineca.it", desc: "Consorzio." },
+                    { name: "AlmaLaurea", url: "https://www.almalaurea.it", desc: "Statistiche & CV." },
+                    { name: "Erasmus+", url: "https://erasmus-plus.ec.europa.eu/it", desc: "Mobilità UE." },
+                    { name: "Study in Italy", url: "https://studyinitaly.esteri.it", desc: "Portale Estero." },
+                    { name: "CIMEA", url: "https://www.cimea.it", desc: "Riconoscimento Titoli." },
+                    { name: "CISIA", url: "https://www.cisiaonline.it", desc: "Test Ingresso (TOLC)." }
+                ]
+            },
+            {
+                title: "Welfare & Lavoro",
+                links: [
+                    { name: "Carta Giovani", url: "https://giovani2030.it", desc: "Sconti under 35." },
+                    { name: "INPS", url: "https://www.inps.it", desc: "Previdenza." },
+                    { name: "ClicLavoro", url: "https://www.cliclavoro.gov.it", desc: "Portale Lavoro." },
+                    { name: "Garanzia Giovani", url: "https://www.anpal.gov.it/garanzia-giovani", desc: "Lavoro UE." },
+                    { name: "Servizio Civile", url: "https://www.politichegiovanili.gov.it", desc: "Volontariato." },
+                    { name: "EURES", url: "https://eures.ec.europa.eu", desc: "Lavoro Europa." },
+                    { name: "Europass", url: "https://europa.eu/europass/it", desc: "CV Europeo." },
+                    { name: "SPID", url: "https://www.spid.gov.it", desc: "Identità Digitale." },
+                    { name: "CIE", url: "https://www.cartaidentita.interno.gov.it", desc: "Carta Identità." }
+                ]
+            }
+        ];
+        
+        const STATUS_MESSAGES = [
+            "Modalità Goblin", "Caffeina IV", "Brainrot: 80%", "Sigma Grindset",
+            "Sopravvivenza", "AFK Mentale", "Cooking...", "Error 404: Voglia",
+            "Zen (Finto)", "Speedrun", "Main Character", "NPC Mode", "Touch Grass",
+            "Loading...", "Lag Mentale", "Rebooting", "Low Battery"
+        ];
+
+        // --- CORE ---
+        let currentView = 'dashboard';
+        let currentTheme = localStorage.getItem('sanctuary_theme') || 'aurora';
+        let activeFilter = 'All';
+        
+        // --- NOTES INIT & DEFAULT ---
+        function initNotes() {
+            const savedNote = localStorage.getItem("sanctuary_note");
+            const textArea = document.getElementById('brain-dump');
+            const defaultText = "Benvenuto nel tuo Sanctuary OS. Questa è la tua dashboard personale per il focus e la produttività. Tutto quello che scrivi qui rimane salvato.";
+            
+            if (savedNote === null) {
+                // First run
+                textArea.value = defaultText;
+                localStorage.setItem("sanctuary_note", defaultText);
+            } else {
+                textArea.value = savedNote;
+            }
+            
+            textArea.addEventListener('input', (e) => localStorage.setItem("sanctuary_note", e.target.value));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => { document.getElementById('loading-screen').classList.add('loaded'); }, 1500);
+
+            lucide.createIcons();
+            updateClock();
+            setInterval(updateClock, 1000);
+            setInterval(breathLoop, 8000);
+            
+            initNotes(); // Init Notes with logic
+
+            setTheme(currentTheme);
+            renderQuickLinks();
+            renderVault();
+            renderNews();
+            renderGov();
+            initStatus(); // Load daily status
+            
+            // Weather
+            const savedCity = localStorage.getItem("sanctuary_city") || "Roma";
+            document.getElementById('city-input').value = savedCity;
+            fetchWeather();
+            
+            // Initial Animations
+            createRain();
+            createStars();
+            createFire();
+            generateCalendar();
+            
+            // Search & Input Logic
+            document.getElementById('internal-search-input').addEventListener('keypress', function (e) { if (e.key === 'Enter') openInternalBrowser(); });
+            document.getElementById('city-input').addEventListener('keypress', function (e) { if (e.key === 'Enter') { this.blur(); fetchWeather(); } });
+            document.getElementById('city-input').addEventListener('click', function() { this.select(); });
+
+            document.getElementById('tool-count-display').textContent = `${TOOL_DB.length}+`;
+            document.getElementById('vault-count').textContent = `(${TOOL_DB.length})`;
+        });
+        
+        // --- STATUS LOGIC ---
+        function initStatus() {
+            const today = new Date().toLocaleDateString();
+            const savedDate = localStorage.getItem("sanctuary_status_date");
+            let index = parseInt(localStorage.getItem("sanctuary_status_index"));
+            
+            if (savedDate !== today || isNaN(index)) {
+                // New day or first run: random index
+                index = Math.floor(Math.random() * STATUS_MESSAGES.length);
+                localStorage.setItem("sanctuary_status_date", today);
+                localStorage.setItem("sanctuary_status_index", index);
+            }
+            document.getElementById('daily-status-text').textContent = STATUS_MESSAGES[index];
+        }
+
+        // --- ANIMATION TRIGGERS ---
+        function triggerFocusAnim() {
+            const ripple = document.getElementById('ripple');
+            ripple.classList.remove('active');
+            void ripple.offsetWidth; // trigger reflow
+            ripple.classList.add('active');
+        }
+
+        function triggerAstro() {
+            // Warp speed effect
+            const stars = document.querySelectorAll('.star');
+            stars.forEach(s => s.classList.add('warp'));
+            setTimeout(() => {
+                setTheme('astro');
+                setTimeout(() => stars.forEach(s => s.classList.remove('warp')), 1000);
+            }, 500);
+        }
+        
+        function triggerFire() { setTheme('fire'); }
+        function triggerRain() { setTheme('rain'); }
+        
+        function triggerThunder() {
+            const lightning = document.getElementById('lightning');
+            const flash = document.getElementById('flash');
+            lightning.classList.add('active');
+            flash.classList.add('active');
+            setTimeout(() => setTheme('thunder'), 100);
+            setTimeout(() => { lightning.classList.remove('active'); flash.classList.remove('active'); }, 300);
+        }
+
+        // --- WEATHER LOGIC (Open-Meteo API) ---
+        async function fetchWeather() {
+            const cityInput = document.getElementById('city-input');
+            const city = cityInput.value || "Roma";
+            const desc = document.getElementById('weather-desc');
+            const tempEl = document.getElementById('weather-temp');
+            desc.textContent = "Cerco...";
+            try {
+                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1&language=it&format=json`);
+                const geoData = await geoRes.json();
+                if (!geoData.results) { desc.textContent = "Città non trovata"; return; }
+                const { latitude, longitude, name } = geoData.results[0];
+                cityInput.value = name; 
+                localStorage.setItem("sanctuary_city", name);
+
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
+                const weatherData = await weatherRes.json();
+                const temp = Math.round(weatherData.current_weather.temperature);
+                const code = weatherData.current_weather.weathercode;
+                
+                tempEl.textContent = `${temp}°`;
+                let condition = "Sereno"; let icon = "sun";
+                if(code > 1 && code < 4) { condition = "Nuvoloso"; icon = "cloud"; }
+                if(code >= 45 && code < 50) { condition = "Nebbia"; icon = "cloud-fog"; }
+                if(code >= 51 && code < 70) { condition = "Pioggia"; icon = "cloud-rain"; }
+                if(code >= 71) { condition = "Neve"; icon = "snowflake"; }
+                if(code >= 95) { condition = "Temporale"; icon = "cloud-lightning"; }
+                desc.textContent = condition;
+                document.getElementById('weather-icon').setAttribute('data-lucide', icon);
+                lucide.createIcons();
+            } catch (e) { desc.textContent = "Errore connessione"; }
+        }
+
+        // --- BROWSER SYSTEM ---
+        function openInternalBrowser() {
+            const query = document.getElementById('internal-search-input').value;
+            if(!query) return;
+            const modal = document.getElementById('browser-modal');
+            const frame = document.getElementById('web-frame');
+            const urlDisplay = document.getElementById('browser-url');
+            
+            // Using Bing Search - it is generally friendlier to iframes than Google
+            const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
+            
+            frame.src = searchUrl;
+            urlDisplay.textContent = searchUrl;
+            modal.classList.add('active');
+        }
+        function closeInternalBrowser() {
+            const modal = document.getElementById('browser-modal');
+            const frame = document.getElementById('web-frame');
+            modal.classList.remove('active');
+            setTimeout(() => frame.src = "about:blank", 300);
+        }
+
+        // --- CALENDAR MODAL ---
+        function toggleCalendar() { document.getElementById('calendar-modal').classList.toggle('active'); }
+        function generateCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const firstDay = new Date(year, month, 1).getDay(); 
+            let startDay = firstDay === 0 ? 6 : firstDay - 1; 
+            let html = '';
+            for(let i=0; i<startDay; i++) html += `<div></div>`;
+            for(let d=1; d<=daysInMonth; d++) {
+                const isToday = d === now.getDate();
+                html += `<div class="aspect-square flex items-center justify-center rounded-lg ${isToday ? 'bg-accent text-white font-bold' : 'hover:bg-white/5'}">${d}</div>`;
+            }
+            grid.innerHTML = html;
+        }
+
+        // --- THEMES ---
+        function setTheme(themeName) {
+            document.body.setAttribute('data-theme', themeName);
+            localStorage.setItem('sanctuary_theme', themeName);
+        }
+
+        // --- ANIMATION GENERATORS ---
+        function createRain() {
+            const container = document.getElementById('rain-layer');
+            for(let i=0; i<50; i++) {
+                const drop = document.createElement('div'); drop.className = 'rain-drop';
+                drop.style.left = Math.random() * 100 + 'vw';
+                drop.style.animationDuration = (Math.random() * 1 + 0.5) + 's';
+                drop.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(drop);
+            }
+        }
+        function createStars() {
+            const container = document.getElementById('stars-layer');
+            for(let i=0; i<100; i++) {
+                const star = document.createElement('div'); star.className = 'star';
+                const size = Math.random() * 2 + 1;
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.width = size + 'px'; star.style.height = size + 'px';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(star);
+            }
+            const comet = document.createElement('div'); comet.className = 'comet';
+            comet.style.top = '10%'; comet.style.left = '0%'; container.appendChild(comet);
+        }
+        function createFire() {
+            const container = document.getElementById('fire-layer');
+            for(let i=0; i<60; i++) {
+                const ember = document.createElement('div'); ember.className = 'ember';
+                ember.style.left = Math.random() * 100 + 'vw';
+                ember.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                ember.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(ember);
+            }
+        }
+
+        // --- UTILS ---
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock-display').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('date-display').textContent = now.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
+            if(document.getElementById('zen-clock')) document.getElementById('zen-clock').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        function breathLoop() {
+            const txt = document.getElementById('breath-text'); if(!txt) return;
+            setTimeout(() => { txt.textContent = "Inspira..."; txt.className = "text-xl font-light tracking-wide text-accent transition-colors duration-1000"; }, 0);
+            setTimeout(() => { txt.textContent = "Trattieni..."; txt.className = "text-xl font-light tracking-wide text-white transition-colors duration-1000"; }, 3000);
+            setTimeout(() => { txt.textContent = "Espira..."; txt.className = "text-xl font-light tracking-wide text-gray-500 transition-colors duration-1000"; }, 4500);
+        }
+        function toggleSettings() { document.getElementById('settings-modal').classList.toggle('active'); }
+        function clearNotes() { document.getElementById('brain-dump').value = ''; localStorage.removeItem('sanctuary_note'); }
+        function switchView(viewName) {
+            currentView = viewName; const isZen = viewName === 'zen';
+            document.body.classList.toggle('zen-active', isZen);
+            document.getElementById('zen-trigger').style.display = isZen ? 'block' : 'none';
+            ['dashboard', 'vault', 'news', 'gov', 'zen'].forEach(v => {
+                const btn = document.getElementById(`btn-${v}`); if (btn) btn.classList.toggle('opacity-60', v !== viewName);
+                const view = document.getElementById(`view-${v}`); if(view) view.classList.add('hidden-view');
+            });
+            document.getElementById(`view-${viewName}`).classList.remove('hidden-view');
+        }
+
+        // --- POMODORO ---
+        let timerInterval; let timeLeft = 25 * 60; let isTimerActive = false; let timerMode = 'focus';
+        function formatTime(s) { return `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`; }
+        function toggleTimer() {
+            const btn = document.getElementById('btn-timer-toggle');
+            if (isTimerActive) { clearInterval(timerInterval); isTimerActive = false; btn.textContent = 'AVVIA'; btn.className = "px-6 py-3 rounded-xl font-bold text-sm tracking-wide transition-all bg-accent-soft text-accent border border-accent-glow hover:scale-105 flex-1"; } 
+            else { isTimerActive = true; btn.textContent = 'PAUSA'; btn.className = "px-6 py-3 rounded-xl font-bold text-sm tracking-wide transition-all bg-white/10 text-white border border-white/10 flex-1"; 
+            timerInterval = setInterval(() => { if (timeLeft > 0) { timeLeft--; document.getElementById('timer-display').textContent = formatTime(timeLeft); document.title = formatTime(timeLeft); } else { clearInterval(timerInterval); isTimerActive = false; toggleTimer(); } }, 1000); }
+        }
+        function resetTimer() { clearInterval(timerInterval); isTimerActive = false; document.getElementById('btn-timer-toggle').textContent = 'AVVIA'; setTimer(timerMode); }
+        function setTimer(mode) { timerMode = mode; clearInterval(timerInterval); isTimerActive = false; document.getElementById('btn-timer-toggle').textContent = 'AVVIA'; timeLeft = mode === 'focus' ? 25*60 : 5*60; document.getElementById('timer-display').textContent = formatTime(timeLeft); }
+
+        // --- RENDERERS ---
+        function renderVault() {
+            const search = document.getElementById('vault-search').value.toLowerCase();
+            const grid = document.getElementById('vault-grid');
+            const cats = ["All", ...new Set(TOOL_DB.map(t => t.cat))];
+            document.getElementById('tag-filters').innerHTML = cats.map(cat => `<button onclick="activeFilter='${cat}';renderVault()" class="px-3 py-1 rounded-lg text-xs whitespace-nowrap border border-transparent ${activeFilter === cat ? 'bg-white/10 text-white font-bold' : 'text-gray-400 hover:bg-white/5'}">${cat}</button>`).join('');
+            grid.innerHTML = TOOL_DB.filter(t => (activeFilter === "All" || t.cat === activeFilter) && (t.name.toLowerCase().includes(search))).map(t => `
+                <a href="${t.url}" target="_blank" class="glass-card p-4 rounded-xl group flex flex-col h-28 relative overflow-hidden hover:bg-white/5 border border-white/5">
+                    <div class="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100"><i data-lucide="external-link" width="12" class="text-white/50"></i></div>
+                    <div class="flex items-center gap-2 mb-2"><div class="w-6 h-6 rounded bg-white/5 flex items-center justify-center text-[10px] text-gray-300 border border-white/10">${t.name.substring(0,2).toUpperCase()}</div><span class="text-[9px] text-accent bg-accent-soft px-1.5 rounded uppercase">${t.cat}</span></div>
+                    <h3 class="font-bold text-sm">${t.name}</h3><p class="text-[10px] opacity-60 truncate">${t.desc}</p>
+                </a>`).join('');
+            lucide.createIcons();
+        }
+
+        function renderNews() { document.getElementById('news-grid').innerHTML = NEWS_SOURCES.map(n => `<a href="${n.url}" target="_blank" class="glass-card p-6 rounded-2xl group flex flex-col justify-between h-40 transition-all hover:scale-[1.02]"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center ${n.color}"><i data-lucide="${n.icon}" width="20"></i></div><span class="text-sm font-bold">${n.name}</span></div><h3 class="text-lg font-bold">Portale News</h3></a>`).join(''); }
+
+        function renderGov() { document.getElementById('gov-container').innerHTML = GOV_CATEGORIES.map(cat => `<div class="mb-2"><h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1">${cat.title}</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3">${cat.links.map(l => `<a href="${l.url}" target="_blank" class="glass-card p-4 rounded-xl flex items-center gap-4 hover:bg-white/5"><div class="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center text-gray-300"><i data-lucide="landmark" width="16"></i></div><div><h4 class="font-bold text-sm">${l.name}</h4></div></a>`).join('')}</div></div>`).join(''); }
+
+        function renderQuickLinks() { document.getElementById('quick-links-container').innerHTML = TOOL_DB.slice(0,8).map(t => `<a href="${t.url}" target="_blank" class="flex flex-col items-center gap-1 min-w-[60px] group p-1 rounded-lg hover:bg-white/5"><div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-300 group-hover:text-accent transition-all text-xs font-bold">${t.name.charAt(0)}</div><span class="text-[8px] font-bold text-gray-400 group-hover:text-white truncate w-full text-center uppercase">${t.name}</span></a>`).join(''); }
+    </script>
+</body>
+</html>
